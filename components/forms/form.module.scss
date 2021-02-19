@@ -1,0 +1,47 @@
+.form_container {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  .form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    max-width: 500px;
+    min-width: 290px;
+    .extra {
+      text-align: center;
+      margin: 24px 0;
+      font-size: 14px;
+    }
+    .actions {
+      display: flex;
+      margin-top: auto;
+      button:nth-child(2) {
+        margin-left: 10px;
+      }
+    }
+  }
+  .success {
+    height: calc(100vh - 32px);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    .details {
+      font-style: normal;
+      font-weight: 500;
+      font-size: 17px;
+      line-height: 23px;
+      text-align: center;
+      letter-spacing: 0.1px;
+      .highlight {
+        color: var(--main);
+      }
+    }
+    .tick {
+      margin-bottom: 16px;
+    }
+  }
+}

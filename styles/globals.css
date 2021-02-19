@@ -1,9 +1,15 @@
+@import url('../public/fonts/San-Francisco/stylesheet.css');
+:root {
+  --main: #007aff;
+  --background: #f5f5f5;
+  --secondary: #f9f9f9;
+  --secondary_text: #b8b8b8;
+}
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family: 'San-Francisco', sans-serif;
 }
 
 a {
@@ -13,4 +19,90 @@ a {
 
 * {
   box-sizing: border-box;
+  font-family: 'San-Francisco', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+.input_container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+  position: relative;
+}
+.input_container input,
+.input_container select {
+  border: 0.5px solid rgba(0, 0, 0, 0.12);
+  outline: 0;
+  height: 48px;
+  border-radius: 4px;
+  background: #f2f3f5;
+  font-size: 16px;
+  line-height: 20px;
+  caret-color: var(--main);
+  padding: 0 10px;
+  transition: border 0.3s;
+}
+.input_container svg {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 16px;
+}
+.input_container input:focus {
+  border: 1px solid var(--main);
+}
+.input_container input.success {
+  background: rgba(0, 122, 255, 0.06);
+}
+.input_container input::placeholder {
+  color: var(--secondary_text);
+}
+
+.input_container label {
+  line-height: 18px;
+  color: var(--secondary_text);
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+p.heading1 {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  letter-spacing: 0.32px;
+  margin: 100px 0 32px;
+}
+p.heading2 {
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 28px;
+  text-align: center;
+  letter-spacing: 0.35px;
+}
+p.heading3 {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+}
+.btn {
+  border-radius: 6px;
+  height: 52px;
+  width: 100%;
+  outline: 0;
+  border: 0;
+  color: #fff;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;
+  cursor: pointer;
+  text-align: center;
+  letter-spacing: -0.32px;
+}
+.btn.primary {
+  background: var(--main);
+}
+.btn.secondary {
+  background: #f9f9f9;
+  color: var(--main);
 }
