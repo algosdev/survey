@@ -3,7 +3,7 @@ import Button from './Button'
 import cls from './form.module.scss'
 import Input from './Input'
 import { Router } from '../../i18n'
-function LoginForm() {
+function SignupForm() {
   return (
     <div className={cls.form_container}>
       <p className='heading1'>Регистрация</p>
@@ -18,13 +18,17 @@ function LoginForm() {
             text='Пропустит'
             variant='secondary'
             type='button'
+            onClick={() => Router.push('/')}
+          />
+          <Button
+            type='button'
+            text='Продолжить'
             onClick={() => Router.push('/bonus')}
           />
-          <Button text='Продолжить' />
         </div>
       </form>
     </div>
   )
 }
 
-export default LoginForm
+export default SignupForm

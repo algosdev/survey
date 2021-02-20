@@ -10,6 +10,7 @@
   "dependencies": {
     "next": "10.0.7",
     "next-i18next": "^7.0.1",
+    "nprogress": "^0.2.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-ultra-date-picker": "^1.1.6",

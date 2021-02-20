@@ -1,15 +1,15 @@
 import React from 'react'
-import SignupForm from '../components/forms/SignupForm'
 import SEO from '../components/SEO'
+import CardForm from '../components/forms/CardForm'
 import Header from '../components/header/Header'
-function signup() {
+function link() {
   return (
     <>
       <SEO />
       <Header />
-      <SignupForm />
+      <CardForm />
     </>
   )
 }
 
-export default signup
+export default link

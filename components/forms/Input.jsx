@@ -8,6 +8,7 @@ function Input({
   name,
   id,
   type,
+  card,
   success,
 }) {
   return (
@@ -16,6 +17,7 @@ function Input({
       <input
         type={type || 'text'}
         placeholder={placeholder || ''}
+        className={card ? 'expire' : ''}
         // className='success'
       />
       {/* {true ? <TickIcon /> : ''} */}

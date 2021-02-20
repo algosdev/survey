@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from '../../i18n'
 import cls from './header.module.scss'
-import { HamburgerIcon, CloseIcon } from '../svg'
+import { HamburgerIcon, CloseIcon, ProfileIcon } from '../svg'
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
   useEffect(() => {
@@ -13,12 +13,28 @@ function Header() {
   }, [menuOpen])
   return (
     <div className={cls.header_container}>
-      <div className={cls.hamburger} onClick={() => setMenuOpen(true)}>
-        <HamburgerIcon />
+      <div className={cls.top}>
+        <div className={cls.left}>
+          <div className={cls.hamburger} onClick={() => setMenuOpen(true)}>
+            <HamburgerIcon />
+          </div>
+          <div className={cls.title}>
+            <p className='heading1'>
+              <Link href='/'>
+                <a>Главная</a>
+              </Link>
+            </p>
+          </div>
+        </div>
+        <div className={cls.right}>
+          <Link href='/profile'>
+            <a>
+              <ProfileIcon />
+            </a>
+          </Link>
+        </div>
       </div>
-      <div className={cls.title}>
-        <p className='heading1'>Главная</p>
-      </div>
+
       <div className={`${menuOpen ? cls.open : ''} ${cls.menu}`}>
         <div className={cls.menu_header}>
           <div
@@ -38,11 +54,7 @@ function Header() {
                 <a>Главная</a>
               </Link>
             </li>
-            <li>
-              <Link href='/profile'>
-                <a>Профиль</a>
-              </Link>
-            </li>
+
             <li>
               <Link href='/link-card'>
                 <a>Прикрепить карту</a>
@@ -51,16 +63,6 @@ function Header() {
             <li>
               <Link href='/bonus'>
                 <a>Получить бонус</a>
-              </Link>
-            </li>
-            <li>
-              <Link href='/login'>
-                <a>Логин</a>
-              </Link>
-            </li>
-            <li>
-              <Link href='/signup'>
-                <a>Регистрация</a>
               </Link>
             </li>
           </ul>

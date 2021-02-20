@@ -1,7 +1,12 @@
-import React from 'react'
+import { useEffect } from 'react'
 import cls from './form.module.scss'
+import { Router } from '../../i18n'
 import { ThickTickIcon } from '../svg'
-function LoginForm() {
+function BonusSuccess() {
+  useEffect(() => {
+    const timer = setTimeout(() => Router.push('/'), 3000)
+    return () => clearTimeout(timer)
+  }, [])
   return (
     <div className={cls.form_container}>
       <div className={cls.success}>
@@ -18,4 +23,4 @@ function LoginForm() {
   )
 }
 
-export default LoginForm
+export default BonusSuccess

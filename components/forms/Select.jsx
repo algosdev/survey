@@ -1,31 +1,50 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { TickIcon } from '../svg'
 function Select({
   placeholder,
-  value,
-  setValue,
+  // value,
+  // setValue,
   label,
   name,
   id,
+  options,
   type,
   success,
 }) {
-  const [openSelect, setOpenSelect] = useState(false)
+  const [isValid, setIsValid] = useState(false)
+  const [value, setValue] = useState('none')
+  useEffect(() => {
+    if (value !== 'none') {
+      setIsValid(true)
+    } else {
+      setIsValid(false)
+    }
+  }, [value])
   return (
     <div className='input_container select'>
       <label htmlFor='input'>{label}</label>
       <select
         type={type || 'text'}
         placeholder={placeholder || ''}
-        className='success'
+        className={isValid ? 'success' : ''}
         id='input'
-        onClick={() => setOpenSelect(true)}
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
       >
-        {openSelect ? '' : <option>1</option>}
-        <option>2</option>
-        <option>3</option>
+        {placeholder ? (
+          <option disabled value='none'>
+            {placeholder}
+          </option>
+        ) : (
+          ''
+        )}
+        {options.map((el, index) => (
+          <option value={el.value} key={index}>
+            {el.display}
+          </option>
+        ))}
       </select>
-      {true ? <TickIcon /> : ''}
+      {isValid ? <TickIcon /> : ''}
     </div>
   )
 }
