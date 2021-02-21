@@ -23,6 +23,8 @@ export async function getServerSideProps(ctx) {
     return
   }
   return {
-    props: {},
+    props: {
+      userId: userId || '',
+    },
   }
 }
