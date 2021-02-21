@@ -1,18 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { TickIcon } from '../svg'
-function Select({
-  placeholder,
-  // value,
-  // setValue,
-  label,
-  name,
-  id,
-  options,
-  type,
-  success,
-}) {
+function Select({ placeholder, value, onChange, label, name, options, type }) {
   const [isValid, setIsValid] = useState(false)
-  const [value, setValue] = useState('none')
   useEffect(() => {
     if (value !== 'none') {
       setIsValid(true)
@@ -22,14 +11,14 @@ function Select({
   }, [value])
   return (
     <div className='input_container select'>
-      <label htmlFor='input'>{label}</label>
+      <label htmlFor={name}>{label}</label>
       <select
         type={type || 'text'}
         placeholder={placeholder || ''}
         className={isValid ? 'success' : ''}
-        id='input'
+        name={name}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={onChange}
       >
         {placeholder ? (
           <option disabled value='none'>

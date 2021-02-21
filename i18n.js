@@ -13,7 +13,5 @@ const nextI18n = new NextI18Next({
     caches: ['cookie'],
   },
 })
-
 module.exports = nextI18n
-
 exports.i18n = nextI18n.i18n

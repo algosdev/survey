@@ -21,7 +21,7 @@ export default function SEO({ title, description, image, keywords }) {
         content={image || '/favicon.svg'}
         key='ogimage'
       />
-      <meta name='theme-color' content='#10272f' />
+      <meta name='theme-color' content='#000' />
       <meta name='twitter:card' content='summary' />
       <meta
         name='twitter:title'

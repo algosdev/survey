@@ -29,9 +29,9 @@ a {
   position: relative;
 }
 .input_container input,
-.input_container select,
-.input_container label.date {
-  border: 0.5px solid rgba(0, 0, 0, 0.12);
+.input_container select {
+  width: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.12);
   outline: 0;
   height: 48px;
   border-radius: 4px;
@@ -42,6 +42,31 @@ a {
   padding: 0 10px;
   transition: border 0.3s;
   appearance: none;
+}
+.input_container label.date {
+  position: absolute;
+  pointer-events: none;
+  bottom: 0;
+  left: 10px;
+  color: var(--secondary_text);
+  font-size: 16px;
+  transform: translateY(-50%);
+}
+
+.input_container select {
+  color: var(--secondary_text);
+}
+.input_container select.success {
+  color: black;
+}
+.input_container option:not(:first-of-type) {
+  color: black;
+}
+.input_container option:first-of-type {
+  display: none;
+}
+.input_container label.none {
+  display: none;
 }
 .input_container input.expire {
   max-width: 170px;
@@ -63,6 +88,37 @@ a {
 }
 .input_container input::placeholder {
   color: var(--secondary_text);
+}
+.input_container input.date::placeholder {
+  color: #000;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  -webkit-text-fill-color: #000;
+  -webkit-text-size-adjust: 16px;
+  font-size: 16px;
+  box-shadow: 0 0 0px 1000px transparent inset;
+  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 .input_container label {

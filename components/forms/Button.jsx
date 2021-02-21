@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Button({ text, variant, onClick, type }) {
+function Button({ text, variant, onClick, type, isLoading, success }) {
   return (
     <button
       type={type || 'submit'}
