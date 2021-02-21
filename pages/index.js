@@ -20,7 +20,6 @@ export async function getServerSideProps(ctx) {
     res.setHeader('location', '/login')
     res.statusCode = 302
     res.end()
-    return
   }
   return {
     props: {
