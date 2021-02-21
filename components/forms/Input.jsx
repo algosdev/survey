@@ -12,11 +12,15 @@ function Input({
   otp,
   expire,
   phone,
+  disabled,
+  error,
 }) {
   const [isValid, setIsValid] = useState(false)
   const validateByType = () => {
     switch (type) {
       case 'text':
+        value !== 'none' && value?.length ? setIsValid(true) : setIsValid(false)
+        break
       case 'date':
         value !== 'none' && value ? setIsValid(true) : setIsValid(false)
         break
@@ -54,7 +58,9 @@ function Input({
       {label ? (
         <label
           htmlFor={name}
-          className={type === 'date' ? (value ? 'none' : 'date') : ''}
+          className={`${type === 'date' && (value ? 'none' : 'date')} ${
+            error && 'error'
+          }`}
         >
           {label}
         </label>
@@ -78,22 +84,29 @@ function Input({
           className={expire ? 'expire' : ''}
           value={value}
           name={name}
+          disabled={disabled}
           onChange={onChange}
-          className={isValid ? 'success' : ''}
+          className={`${isValid && !error && 'success'} ${error && 'error'} ${
+            expire && 'expire'
+          }`}
+          required
         />
       ) : (
         <input
           type={type || 'text'}
           placeholder={placeholder || ''}
-          className={expire ? 'expire' : ''}
           value={value}
           name={name}
+          required
           onChange={onChange}
+          disabled={disabled}
           format=''
-          className={isValid ? 'success' : ''}
+          className={`${isValid && !error && 'success'} ${expire && 'expire'} ${
+            error && 'error'
+          }`}
         />
       )}
-      {isValid && type !== 'date' ? <TickIcon /> : ''}
+      {isValid && !error && type !== 'date' ? <TickIcon /> : ''}
     </div>
   )
 }

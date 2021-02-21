@@ -5,7 +5,7 @@ import Header from '../components/header/Header'
 function bonus() {
   return (
     <>
-      <SEO />
+      <SEO title='Получить бонус' />
       <Header />
       <BonusForm />
     </>

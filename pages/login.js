@@ -1,12 +1,11 @@
 import React from 'react'
 import LoginForm from '../components/forms/LoginForm'
 import SEO from '../components/SEO'
-import Header from '../components/header/Header'
+// import Header from '../components/header/Header'
 function login() {
   return (
     <>
-      <SEO />
-      <Header />
+      <SEO title='Логин' />
       <LoginForm />
     </>
   )

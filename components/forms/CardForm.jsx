@@ -4,7 +4,11 @@ import cls from './form.module.scss'
 import Input from './Input'
 import { Router } from '../../i18n'
 function CardForm() {
-  const [values, setValues] = useState({ card_number: '', expire: '' })
+  const [values, setValues] = useState({
+    card_number: '',
+    expire: '',
+    card_name: '',
+  })
   const handleSubmit = (e) => {
     e.preventDefault()
     Router.push('/')
@@ -16,7 +20,14 @@ function CardForm() {
     <div className={cls.form_container}>
       <p className='heading1'>Прикрепить карту</p>
       <form className={cls.form} onSubmit={handleSubmit}>
-        <Input placeholder='Введите имя' label='Владелец карты' />
+        <Input
+          placeholder='Введите имя'
+          label='Владелец карты'
+          value={values.card_name}
+          onChange={handleChange}
+          name='card_name'
+          type='text'
+        />
         <Input
           placeholder='Введите номер карты'
           label='Номер карты'

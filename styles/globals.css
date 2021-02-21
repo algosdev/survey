@@ -68,6 +68,13 @@ a {
 .input_container label.none {
   display: none;
 }
+.input_container label.error {
+  color: red;
+}
+.input_container input.error,
+.input_container input.error:focus {
+  border-color: red;
+}
 .input_container input.expire {
   max-width: 170px;
 }
@@ -162,6 +169,7 @@ p.heading3 {
   cursor: pointer;
   text-align: center;
   letter-spacing: -0.32px;
+  position: relative;
 }
 .btn.primary {
   background: var(--main);
@@ -169,6 +177,12 @@ p.heading3 {
 .btn.secondary {
   background: #f9f9f9;
   color: var(--main);
+}
+.btn.small {
+  height: 36px;
+  width: 100%;
+  font-weight: 500;
+  font-size: 14px;
 }
 #nprogress {
   pointer-events: none;

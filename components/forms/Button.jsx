@@ -1,13 +1,19 @@
 import React from 'react'
-
-function Button({ text, variant, onClick, type, isLoading, success }) {
+import cls from './form.module.scss'
+function Button({ text, variant, onClick, type, isLoading, success, small }) {
   return (
     <button
       type={type || 'submit'}
       onClick={onClick}
-      className={`btn ${variant || 'primary'}`}
+      className={`btn ${variant || 'primary'} ${small && 'small'}`}
     >
-      {text}
+      {isLoading ? (
+        <div className={cls.loading_bar_spinner}>
+          <div className={cls.spinner_icon}></div>
+        </div>
+      ) : (
+        text
+      )}
     </button>
   )
 }
