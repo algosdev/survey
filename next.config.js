@@ -3,7 +3,7 @@ const localeSubpaths = {
   uz: 'uz',
   en: 'en',
 }
-const baseUrl = 'http://134.209.111.217:8000/v1'
+const baseUrl = 'https://survey.api.udevs.io/v1'
 module.exports = {
   env: {
     GENERATE_OTP_API_URL: `${baseUrl}/auth/otp/generate/customer`,
