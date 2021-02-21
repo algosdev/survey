@@ -11,6 +11,7 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [userExists, setUserExists] = useState(false)
   const [error, setError] = useState(false)
+  const [phoneNumError, setPhoneNumError] = useState(false)
   const [success, setSuccess] = useState(false)
   const [device, setDevice] = useState(null)
   const { secretKey } = parseCookies()
@@ -22,6 +23,7 @@ function LoginForm() {
     })
   const sendOTP = () => {
     setIsLoading(true)
+    setPhoneNumError(false)
     axios
       .post(
         process.env.GENERATE_OTP_API_URL,
@@ -46,7 +48,10 @@ function LoginForm() {
           }, !data?.user_found).then((res) => res && Router.push('/signup'))
         }
       })
-      .catch((err) => setIsLoading(false))
+      .catch((err) => {
+        setIsLoading(false)
+        setPhoneNumError(true)
+      })
   }
 
   const checkOTP = () => {
@@ -115,7 +120,9 @@ function LoginForm() {
           onChange={handleChange}
           name='phone_login'
           type='tel'
+          error={phoneNumError}
           phone
+          disabled={userExists}
         />
         {userExists ? (
           <Input
