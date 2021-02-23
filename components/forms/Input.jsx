@@ -98,6 +98,8 @@ function Input({
           value={value}
           name={name}
           required
+          max={`${new Date().getFullYear() - 17}-12-31`}
+          min={`${new Date().getFullYear() - 69}-01-01`}
           onChange={onChange}
           disabled={disabled}
           format=''
