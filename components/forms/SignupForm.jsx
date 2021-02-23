@@ -10,25 +10,37 @@ function SignupForm() {
   const { phoneNum, secretKey } = parseCookies()
   const [device, setDevice] = useState(null)
   const [values, setValues] = useState({
-    name: '',
+    first_name: '',
+    last_name: '',
     phone_signup: phoneNum || '',
     otp_signup: '',
   })
   const [nameError, setNameError] = useState(false)
+  const [lastNameError, setLastNameError] = useState(false)
   const [otpError, setOtpError] = useState(false)
+  const [emailError, setEmailError] = useState(false)
   const createCookies = (func, value) =>
     new Promise((resolve, reject) => {
       func()
       resolve(value)
       reject()
     })
-
+  function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
+  }
   const handleSubmit = (e, more) => {
     e.preventDefault()
     setNameError(false)
+    setLastNameError(false)
     setOtpError(false)
-    if (!values.name) {
+    setEmailError(false)
+    if (!values.first_name) {
       setNameError(true)
+    } else if (!values.last_name) {
+      setLastNameError(true)
+    } else if (!validateEmail(values.email)) {
+      setEmailError(true)
     } else if (!values.otp_signup) {
       setOtpError(true)
     } else {
@@ -39,7 +51,9 @@ function SignupForm() {
             phone: values.phone_signup.replaceAll(' ', ''),
             code: values.otp_signup.replaceAll(' ', ''),
             device,
-            name: values.name,
+            firstname: values.first_name,
+            lastname: values.last_name,
+            email: values.email,
             secret: secretKey,
           },
           {
@@ -82,10 +96,28 @@ function SignupForm() {
         <Input
           placeholder='Введите имя'
           label='Имя'
-          value={values.name}
+          value={values.first_name}
           onChange={handleChange}
-          name='name'
+          name='first_name'
           error={nameError}
+          type='text'
+        />
+        <Input
+          placeholder='Введите фамилия'
+          label='Фамилия'
+          value={values.last_name}
+          onChange={handleChange}
+          name='last_name'
+          error={lastNameError}
+          type='text'
+        />
+        <Input
+          placeholder='Введите электронная почта'
+          label='Электронная почта'
+          value={values.email}
+          onChange={handleChange}
+          name='email'
+          error={emailError}
           type='text'
         />
         <Input

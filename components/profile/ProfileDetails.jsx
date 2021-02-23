@@ -31,7 +31,9 @@ function ProfileDetails({ user }) {
             <UserIcon />
           )}
         </div>
-        <p className='heading2'>{user?.name}</p>
+        <p className='heading2'>
+          {user?.firstname} {user?.lastname}
+        </p>
         <p className={cls.balance}>Баланс: 0 сум</p>
       </div>
       <div className={cls.extra_details}>
@@ -46,11 +48,12 @@ function ProfileDetails({ user }) {
             <div className={cls.type}>Номер телефона</div>
             <div className={cls.value}>{user?.phone}</div>
           </div>
-          {/* <div className={cls.row}>
-            <div className={cls.type}>Дата рождения</div>
-            <div className={cls.value}>15.07.2000</div>
-          </div>
+
           <div className={cls.row}>
+            <div className={cls.type}>Электронная почта</div>
+            <div className={cls.value}>{user?.email}</div>
+          </div>
+          {/*<div className={cls.row}>
             <div className={cls.type}>Национальност</div>
             <div className={cls.value}>Узбек</div>
           </div>

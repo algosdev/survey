@@ -12,6 +12,7 @@ function BonusForm() {
     number_of_children: 'none',
     workplace: '',
     nationality: 'none',
+    position: '',
   })
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -82,11 +83,18 @@ function BonusForm() {
           name='number_of_children'
         />
         <Input
-          placeholder='Введите рабочая места'
-          label='Рабочая места'
+          placeholder='Введите место работы'
+          label='Место работы'
           value={values.workplace}
           onChange={(e) => setValues({ ...values, workplace: e.target.value })}
           name='workplace'
+        />
+        <Input
+          placeholder='Введите должность'
+          label='Должность'
+          value={values.position}
+          onChange={(e) => setValues({ ...values, position: e.target.value })}
+          name='position'
         />
         <Button text='Продолжить' />
       </form>
