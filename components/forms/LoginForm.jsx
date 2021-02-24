@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Button from './Button'
 import cls from './form.module.scss'
 import Input from './Input'
@@ -6,14 +6,21 @@ import { Router } from '../../i18n'
 import DeviceDetector from 'device-detector-js'
 import axios from 'axios'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
+import ReCAPTCHA from 'react-google-recaptcha'
 function LoginForm() {
-  const [values, setValues] = useState({ phone_login: '', otp_login: '' })
+  const [values, setValues] = useState({
+    phone_login: '',
+    otp_login: '',
+    recaptcha: '',
+  })
   const [isLoading, setIsLoading] = useState(false)
   const [userExists, setUserExists] = useState(false)
+  const [recaptchaError, setRecaptchaError] = useState(false)
   const [error, setError] = useState(false)
   const [phoneNumError, setPhoneNumError] = useState(false)
   const [success, setSuccess] = useState(false)
   const [device, setDevice] = useState(null)
+  const recaptcha = useRef()
   const { secretKey } = parseCookies()
   const createCookies = (func, value) =>
     new Promise((resolve, reject) => {
@@ -89,8 +96,13 @@ function LoginForm() {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
+    setRecaptchaError(false)
     if (userExists) {
-      checkOTP()
+      if (values.recaptcha === '' || !values.recaptcha.trim()) {
+        setRecaptchaError(true)
+      } else {
+        checkOTP()
+      }
     } else {
       sendOTP()
     }
@@ -99,6 +111,10 @@ function LoginForm() {
     setValues({ ...values, [e.target.name]: e.target.value })
   }
   useEffect(() => {
+    if (recaptcha.current) {
+      console.log(recaptcha.current)
+      // .setAttribute('required', 'required')
+    }
     if (!device) {
       const deviceDetector = new DeviceDetector()
       const deviceData = deviceDetector.parse(navigator.userAgent)
@@ -112,7 +128,7 @@ function LoginForm() {
   return (
     <div className={cls.form_container}>
       <p className='heading1'>Войти</p>
-      <form className={cls.form} onSubmit={handleSubmit}>
+      <form className={cls.form} onSubmit={handleSubmit} autoComplete='off'>
         <Input
           placeholder='Введите номер телефона'
           label='Номер телефона'
@@ -125,19 +141,36 @@ function LoginForm() {
           disabled={userExists}
         />
         {userExists ? (
-          <Input
-            placeholder='Введите одноразовый пароль'
-            label='Одноразовый пароль'
-            value={values.otp_login}
-            onChange={handleChange}
-            name='otp_login'
-            type='tel'
-            otp
-            error={error}
-          />
+          <>
+            <Input
+              placeholder='Введите одноразовый пароль'
+              label='Одноразовый пароль'
+              value={values.otp_login}
+              onChange={handleChange}
+              name='otp_login'
+              type='tel'
+              otp
+              error={error}
+            />
+            <div className={cls.recaptcha_survey}>
+              <ReCAPTCHA
+                sitekey='6Lfly2UaAAAAAOovZnMTe7Ginwy5KBrZcyBc9GZW
+    '
+                hl='ru'
+                ref={recaptcha}
+                onChange={(val) => setValues({ ...values, recaptcha: val })}
+              />
+              {recaptchaError ? (
+                <p className={cls.error}>Требуется проверка человеком</p>
+              ) : (
+                ''
+              )}
+            </div>
+          </>
         ) : (
           ''
         )}
+
         <div className={cls.actions}>
           <Button text='Продолжить' isLoading={isLoading} success={success} />
         </div>

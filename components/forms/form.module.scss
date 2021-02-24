@@ -45,6 +45,14 @@
     }
   }
 }
+.recaptcha_survey {
+  margin-bottom: 5px;
+  .error {
+    color: red;
+    font-size: 14px;
+    margin: 4px 0;
+  }
+}
 .loading_bar_spinner {
   top: 50%;
   left: 50%;
