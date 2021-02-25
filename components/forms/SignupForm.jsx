@@ -3,10 +3,12 @@ import Button from './Button'
 import cls from './form.module.scss'
 import Input from './Input'
 import { Router } from '../../i18n'
+import { useRouter } from 'next/router'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import axios from 'axios'
 import DeviceDetector from 'device-detector-js'
 function SignupForm() {
+  const router = useRouter()
   const { phoneNum, secretKey } = parseCookies()
   const [device, setDevice] = useState(null)
   const [values, setValues] = useState({

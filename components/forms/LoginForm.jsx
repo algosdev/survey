@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import Button from './Button'
 import cls from './form.module.scss'
 import Input from './Input'
-import { Router } from '../../i18n'
+import { useRouter } from 'next/router'
+import { Router, Link } from '../../i18n'
 import DeviceDetector from 'device-detector-js'
 import axios from 'axios'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
@@ -13,6 +14,7 @@ function LoginForm() {
     otp_login: '',
     recaptcha: '',
   })
+  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [userExists, setUserExists] = useState(false)
   const [recaptchaError, setRecaptchaError] = useState(false)
@@ -129,17 +131,30 @@ function LoginForm() {
     <div className={cls.form_container}>
       <p className='heading1'>Войти</p>
       <form className={cls.form} onSubmit={handleSubmit} autoComplete='off'>
-        <Input
-          placeholder='Введите номер телефона'
-          label='Номер телефона'
-          value={values.phone_login}
-          onChange={handleChange}
-          name='phone_login'
-          type='tel'
-          error={phoneNumError}
-          phone
-          disabled={userExists}
-        />
+        {router.query.email ? (
+          <Input
+            placeholder='Введите адрес эл. почты'
+            label='Эл. почта'
+            value={values.email}
+            onChange={handleChange}
+            name='email_login'
+            type='email'
+            error={phoneNumError}
+            disabled={userExists}
+          />
+        ) : (
+          <Input
+            placeholder='Введите номер телефона'
+            label='Номер телефона'
+            value={values.phone_login}
+            onChange={handleChange}
+            name='phone_login'
+            type='tel'
+            error={phoneNumError}
+            phone
+            disabled={userExists}
+          />
+        )}
         {userExists ? (
           <>
             <Input
@@ -173,6 +188,17 @@ function LoginForm() {
 
         <div className={cls.actions}>
           <Button text='Продолжить' isLoading={isLoading} success={success} />
+        </div>
+        <div className={cls.extra_link}>
+          {!router.query.email ? (
+            <Link href='/login?email=true'>
+              <a>Войти с помощью электронной почты</a>
+            </Link>
+          ) : (
+            <Link href='/login'>
+              <a>Войти с помощью номер телефона</a>
+            </Link>
+          )}
         </div>
       </form>
     </div>
