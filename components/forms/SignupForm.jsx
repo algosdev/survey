@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import axios from 'axios'
 import Select from './Select'
+import moment from 'moment'
 import DeviceDetector from 'device-detector-js'
 function SignupForm() {
   const router = useRouter()
@@ -54,15 +55,20 @@ function SignupForm() {
     } else {
       axios
         .post(
-          process.env.REGISTER_API_URL,
+          process.env.UPDATE_CUSTOMER_API_URL,
           {
-            phone: values.phone_signup.replaceAll(' ', ''),
-            code: values.otp_signup.replaceAll(' ', ''),
-            device,
+            // phone: values.phone_signup.replaceAll(' ', ''),
+            // code: values.otp_signup.replaceAll(' ', ''),
+            // device,
             firstname: values.first_name,
             lastname: values.last_name,
-            email: values.email,
-            secret: secretKey,
+            country: values.country,
+            region: values.region,
+            dob: moment(values.date_of_birth).format('YYYY-MM-DD'),
+            district: values.district,
+            gender: values.gender,
+            // email: values.email,
+            // secret: secretKey,
           },
           {
             headers: {
@@ -170,7 +176,7 @@ function SignupForm() {
           onChange={handleChange}
           name='district'
         />
-        <Input
+        {/* <Input
           placeholder='Введите электронная почта'
           label='Электронная почта'
           value={values.email}
@@ -178,7 +184,7 @@ function SignupForm() {
           name='email'
           error={emailError}
           type='text'
-        />
+        /> */}
         <Input
           placeholder='Введите номер телефона'
           label='Номер телефона'
