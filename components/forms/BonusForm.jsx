@@ -13,6 +13,9 @@ function BonusForm() {
     workplace: '',
     nationality: 'none',
     position: '',
+    country: 'none',
+    region: 'none',
+    district: 'none',
   })
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -44,15 +47,38 @@ function BonusForm() {
           name='date_of_birth'
         />
         <Select
-          placeholder='Выберите ваш национальност'
+          placeholder='Выберите вашу страну'
           options={[
-            { display: 'Узбек', value: 'uzbek' },
-            { display: 'Русский', value: 'russian' },
-            { display: 'Казак', value: 'kazakh' },
+            { display: 'Узбекистан', value: 'uzbekistan' },
+            { display: 'Россия', value: 'russia' },
+            { display: 'США', value: 'usa' },
           ]}
-          value={values.nationality}
+          value={values.country}
           onChange={handleChange}
-          name='nationality'
+          name='country'
+        />
+
+        <Select
+          placeholder='Выберите ваш регион'
+          options={[
+            { display: 'Ташкент', value: 'tashkent' },
+            { display: 'Самарканд', value: 'samarkand' },
+            { display: 'Андижан', value: 'andijan' },
+          ]}
+          value={values.region}
+          onChange={handleChange}
+          name='region'
+        />
+        <Select
+          placeholder='Выберите ваш город/район'
+          options={[
+            { display: 'Юнусабад', value: 'yunusobod' },
+            { display: 'Мирабад', value: 'mirobod' },
+            { display: 'Мирзо Улугбук', value: 'mirzo_ulugbek' },
+          ]}
+          value={values.district}
+          onChange={handleChange}
+          name='district'
         />
 
         <Select

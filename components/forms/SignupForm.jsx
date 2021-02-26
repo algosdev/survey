@@ -6,6 +6,7 @@ import { Router } from '../../i18n'
 import { useRouter } from 'next/router'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import axios from 'axios'
+import Select from './Select'
 import DeviceDetector from 'device-detector-js'
 function SignupForm() {
   const router = useRouter()
@@ -16,6 +17,11 @@ function SignupForm() {
     last_name: '',
     phone_signup: phoneNum || '',
     otp_signup: '',
+    country: 'none',
+    region: 'none',
+    district: 'none',
+    date_of_birth: '',
+    gender: 'none',
   })
   const [nameError, setNameError] = useState(false)
   const [lastNameError, setLastNameError] = useState(false)
@@ -114,6 +120,57 @@ function SignupForm() {
           type='text'
         />
         <Input
+          label='Выберите дата рождения'
+          type='date'
+          value={values.date_of_birth}
+          onChange={handleChange}
+          name='date_of_birth'
+        />
+        <Select
+          placeholder='Пол'
+          options={[
+            { display: 'Мужчина', value: 'male' },
+            { display: 'Женщина', value: 'female' },
+          ]}
+          value={values.gender}
+          onChange={handleChange}
+          name='gender'
+        />
+        <Select
+          placeholder='Выберите вашу страну'
+          options={[
+            { display: 'Узбекистан', value: 'uzbekistan' },
+            { display: 'Россия', value: 'russia' },
+            { display: 'США', value: 'usa' },
+          ]}
+          value={values.country}
+          onChange={handleChange}
+          name='country'
+        />
+
+        <Select
+          placeholder='Выберите ваш регион'
+          options={[
+            { display: 'Ташкент', value: 'tashkent' },
+            { display: 'Самарканд', value: 'samarkand' },
+            { display: 'Андижан', value: 'andijan' },
+          ]}
+          value={values.region}
+          onChange={handleChange}
+          name='region'
+        />
+        <Select
+          placeholder='Выберите ваш город/район'
+          options={[
+            { display: 'Юнусабад', value: 'yunusobod' },
+            { display: 'Мирабад', value: 'mirobod' },
+            { display: 'Мирзо Улугбук', value: 'mirzo_ulugbek' },
+          ]}
+          value={values.district}
+          onChange={handleChange}
+          name='district'
+        />
+        <Input
           placeholder='Введите электронная почта'
           label='Электронная почта'
           value={values.email}
@@ -132,7 +189,7 @@ function SignupForm() {
           phone
           disabled={phoneNum}
         />
-        <Input
+        {/* <Input
           placeholder='Введите одноразовый пароль'
           label='Одноразовый пароль'
           value={values.otp_signup}
@@ -141,8 +198,7 @@ function SignupForm() {
           type='tel'
           otp
           error={otpError}
-        />
-        {/* <Input placeholder='Введите фамилия' label='Фамилия' /> */}
+        /> */}
         <p className={cls.extra}>
           Вы сможете заполнить дополнительные данные и получить бонус
         </p>

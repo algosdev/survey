@@ -17,6 +17,7 @@ function LoginForm() {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
   const [userExists, setUserExists] = useState(false)
+  const [registering, setRegistering] = useState(false)
   const [recaptchaError, setRecaptchaError] = useState(false)
   const [error, setError] = useState(false)
   const [phoneNumError, setPhoneNumError] = useState(false)
@@ -46,6 +47,7 @@ function LoginForm() {
         }
       )
       .then(({ data, status }) => {
+        console.log(data)
         setIsLoading(false)
         if (status === 200) {
           if (data?.user_found) {
@@ -54,7 +56,11 @@ function LoginForm() {
           createCookies(() => {
             setCookie({}, 'secretKey', data.secret, { path: '/' })
             setCookie({}, 'phoneNum', values.phone_login, { path: '/' })
-          }, !data?.user_found).then((res) => res && Router.push('/signup'))
+            // then((res) => res && Router.push('/signup')
+          }, !data?.user_found).then(() => {
+            setRegistering(true)
+            setUserExists(true)
+          })
         }
       })
       .catch((err) => {
@@ -68,7 +74,7 @@ function LoginForm() {
     setIsLoading(true)
     axios
       .post(
-        process.env.LOGIN_API_URL,
+        registering ? process.env.REGISTER_API_URL : process.env.LOGIN_API_URL,
         {
           code: values.otp_login.replaceAll(' ', ''),
           device,
@@ -89,7 +95,7 @@ function LoginForm() {
           destroyCookie({}, 'phoneNum', values.phone_login, { path: '/' })
         }
       })
-      .then(() => Router.push('/'))
+      .then(() => Router.push(registering ? '/signup' : '/'))
       .catch((err) => {
         console.log(err)
         setIsLoading(false)
@@ -115,7 +121,6 @@ function LoginForm() {
   useEffect(() => {
     if (recaptcha.current) {
       console.log(recaptcha.current)
-      // .setAttribute('required', 'required')
     }
     if (!device) {
       const deviceDetector = new DeviceDetector()

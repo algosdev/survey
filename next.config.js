@@ -3,6 +3,7 @@ const localeSubpaths = {
   uz: 'uz',
   en: 'en',
 }
+// https://survey.api.udevs.io/swagger/index.html
 const baseUrl = 'https://survey.api.udevs.io/v1'
 module.exports = {
   env: {
