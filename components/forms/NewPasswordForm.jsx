@@ -9,7 +9,7 @@ import axios from 'axios'
 import InputEmail from './InputEmail'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import ReCAPTCHA from 'react-google-recaptcha'
-function LoginFormEmail() {
+function NewPasswordForm() {
   const [values, setValues] = useState({
     email_login: '',
     otp_login: '',
@@ -241,4 +241,4 @@ function LoginFormEmail() {
   )
 }
 
-export default LoginFormEmail
+export default NewPasswordForm
