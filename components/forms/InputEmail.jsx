@@ -1,81 +1,46 @@
 import { useState, useEffect } from 'react'
 import { TickIcon } from '../svg'
 import InputMask from 'react-input-mask'
-function Input({
+function InputEmail({
   placeholder,
   value,
   onChange,
   label,
   name,
   type,
-  card,
-  otp,
   expire,
-  phone,
   disabled,
   error,
 }) {
   const [isValid, setIsValid] = useState(false)
-  const validateByType = () => {
-    switch (type) {
-      case 'text':
-        value !== 'none' && value?.length ? setIsValid(true) : setIsValid(false)
-        break
-      case 'date':
-        value !== 'none' && value ? setIsValid(true) : setIsValid(false)
-        break
-      case 'tel':
-        otp
-          ? value?.length === 11
-            ? setIsValid(true)
-            : setIsValid(false)
-          : card
-          ? value?.length === 19
-            ? setIsValid(true)
-            : setIsValid(false)
-          : expire
-          ? value?.length === 5
-            ? setIsValid(true)
-            : setIsValid(false)
-          : phone
-          ? value?.length === 17
-            ? setIsValid(true)
-            : setIsValid(false)
-          : setIsValid(false)
-        break
-      default:
-        setIsValid(false)
-        break
-    }
+  function validateEmail(email) {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    return re.test(String(email).toLowerCase())
   }
+
   useEffect(() => {
-    validateByType()
-    console.log(value)
+    if (validateEmail(value)) {
+      setIsValid(true)
+    } else {
+      setIsValid(false)
+    }
   })
 
   return (
     <div className='input_container'>
-      {label ? (
-        <label
-          htmlFor={name}
-          className={`${type === 'date' && (value ? 'none' : 'date')} ${
-            error && 'error'
-          }`}
-        >
+      {label && (
+        <label htmlFor={name} className={`${error && 'error'}`}>
           {label}
         </label>
-      ) : (
-        ''
       )}
       <input
-        type={'text'}
+        type='text'
         placeholder={placeholder || ''}
         value={value}
         name={name}
         required
         onChange={onChange}
         disabled={disabled}
-        format=''
         className={`${isValid && !error && 'success'} ${expire && 'expire'} ${
           error && 'error'
         }`}
@@ -85,4 +50,4 @@ function Input({
   )
 }
 
-export default Input
+export default InputEmail

@@ -48,11 +48,15 @@ function SignupForm() {
       setNameError(true)
     } else if (!values.last_name) {
       setLastNameError(true)
-    } else if (!validateEmail(values.email)) {
-      setEmailError(true)
-    } else if (!values.otp_signup) {
-      setOtpError(true)
-    } else {
+    }
+    //  else if (!validateEmail(values.email)) {
+    //   setEmailError(true)
+    // }
+    // else if (!values.otp_signup) {
+    //   setOtpError(true)
+    // }
+    else {
+      console.log('reached')
       axios
         .post(
           process.env.UPDATE_CUSTOMER_API_URL,
@@ -92,6 +96,9 @@ function SignupForm() {
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
   }
+  const arr = [1, 2, 3, 4, 5, 6]
+  const newArr = arr.filter((el, index) => index % 2 === 1)
+  console.log(`${arr}\n${newArr}`)
   useEffect(() => {
     if (!device) {
       const deviceDetector = new DeviceDetector()
@@ -185,7 +192,7 @@ function SignupForm() {
           error={emailError}
           type='text'
         /> */}
-        <Input
+        {/* <Input
           placeholder='Введите номер телефона'
           label='Номер телефона'
           value={values.phone_signup}
@@ -194,7 +201,7 @@ function SignupForm() {
           type='tel'
           phone
           disabled={phoneNum}
-        />
+        /> */}
         {/* <Input
           placeholder='Введите одноразовый пароль'
           label='Одноразовый пароль'

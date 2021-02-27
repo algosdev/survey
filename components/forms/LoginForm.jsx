@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import { Router, Link } from '../../i18n'
 import DeviceDetector from 'device-detector-js'
 import axios from 'axios'
+import InputEmail from './InputEmail'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import ReCAPTCHA from 'react-google-recaptcha'
 function LoginForm() {
@@ -57,9 +58,11 @@ function LoginForm() {
             setCookie({}, 'secretKey', data.secret, { path: '/' })
             setCookie({}, 'phoneNum', values.phone_login, { path: '/' })
             // then((res) => res && Router.push('/signup')
-          }, !data?.user_found).then(() => {
-            setRegistering(true)
-            setUserExists(true)
+          }, !data?.user_found).then((res) => {
+            if (res) {
+              setRegistering(true)
+              setUserExists(true)
+            }
           })
         }
       })
@@ -136,18 +139,28 @@ function LoginForm() {
     <div className={cls.form_container}>
       <p className='heading1'>Войти</p>
       <form className={cls.form} onSubmit={handleSubmit} autoComplete='off'>
+        {/* <InputEmail
+          placeholder='Введите адрес эл. почты'
+          label='Эл. почта'
+          value={values.email}
+          onChange={handleChange}
+          name='email_login'
+          type='email'
+          disabled={userExists}
+        /> */}
         {router.query.email ? (
-          <Input
-            placeholder='Введите адрес эл. почты'
-            label='Эл. почта'
-            value={values.email}
-            onChange={handleChange}
-            name='email_login'
-            type='email'
-            error={phoneNumError}
-            disabled={userExists}
-          />
+          ''
         ) : (
+          // <Input
+          //   placeholder='Введите адрес эл. почты'
+          //   label='Эл. почта'
+          //   value={values.email}
+          //   onChange={handleChange}
+          //   name='email_login'
+          //   type='email'
+          //   error={phoneNumError}
+          //   disabled={userExists}
+          // />
           <Input
             placeholder='Введите номер телефона'
             label='Номер телефона'
