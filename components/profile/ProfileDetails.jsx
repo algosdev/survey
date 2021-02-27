@@ -44,15 +44,18 @@ function ProfileDetails({ user }) {
           </button>
         </div>
         <div className={cls.content}>
-          <div className={cls.row}>
-            <div className={cls.type}>Номер телефона</div>
-            <div className={cls.value}>{user?.phone}</div>
-          </div>
-
-          <div className={cls.row}>
-            <div className={cls.type}>Электронная почта</div>
-            <div className={cls.value}>{user?.email}</div>
-          </div>
+          {user?.phone && (
+            <div className={cls.row}>
+              <div className={cls.type}>Номер телефона</div>
+              <div className={cls.value}>{user?.phone}</div>
+            </div>
+          )}
+          {user?.email && (
+            <div className={cls.row}>
+              <div className={cls.type}>Электронная почта</div>
+              <div className={cls.value}>{user?.email}</div>
+            </div>
+          )}
           {/*<div className={cls.row}>
             <div className={cls.type}>Национальност</div>
             <div className={cls.value}>Узбек</div>

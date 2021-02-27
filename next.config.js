@@ -8,6 +8,9 @@ const baseUrl = 'https://survey.api.udevs.io/v1'
 module.exports = {
   env: {
     GENERATE_OTP_API_URL: `${baseUrl}/auth/otp/generate/customer`,
+    GENERATE_OTP_EMAIL_API_URL: `${baseUrl}/auth/email-otp/generate/customer`,
+    REGISTER_EMAIL_API_URL: `${baseUrl}/auth/email-register/customer`,
+    LOGIN_EMAIL_API_URL: `${baseUrl}/auth/login/customer`,
     REGISTER_API_URL: `${baseUrl}/auth/register/customer`,
     UPDATE_CUSTOMER_API_URL: `${baseUrl}/update-customer-self`,
     LOGIN_API_URL: `${baseUrl}/auth/otp/confirm/customer`,

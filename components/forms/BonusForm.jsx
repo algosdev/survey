@@ -29,7 +29,7 @@ function BonusForm() {
     <div className={cls.form_container}>
       <p className='heading1'>Получить бонус</p>
       <form className={cls.form} onSubmit={handleSubmit}>
-        <Select
+        {/* <Select
           placeholder='Выберите пол'
           options={[
             { display: 'Мужской', value: 'male' },
@@ -39,7 +39,7 @@ function BonusForm() {
           onChange={handleChange}
           name='sex'
         />
-        <Input
+         <Input
           label='Выберите дата рождения'
           type='date'
           value={values.date_of_birth}
@@ -79,7 +79,7 @@ function BonusForm() {
           value={values.district}
           onChange={handleChange}
           name='district'
-        />
+        /> */}
 
         <Select
           placeholder='Выберите семейное положение'

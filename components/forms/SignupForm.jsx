@@ -11,13 +11,14 @@ import moment from 'moment'
 import DeviceDetector from 'device-detector-js'
 function SignupForm() {
   const router = useRouter()
-  const { phoneNum, secretKey } = parseCookies()
+  const { phoneNum, secretKey, userToken } = parseCookies()
   const [device, setDevice] = useState(null)
   const [values, setValues] = useState({
     first_name: '',
     last_name: '',
     phone_signup: phoneNum || '',
     otp_signup: '',
+    password_login: '',
     country: 'none',
     region: 'none',
     district: 'none',
@@ -58,7 +59,7 @@ function SignupForm() {
     else {
       console.log('reached')
       axios
-        .post(
+        .put(
           process.env.UPDATE_CUSTOMER_API_URL,
           {
             // phone: values.phone_signup.replaceAll(' ', ''),
@@ -66,28 +67,26 @@ function SignupForm() {
             // device,
             firstname: values.first_name,
             lastname: values.last_name,
-            country: values.country,
-            region: values.region,
+            country: '057fd9be-c11c-46c5-9ca7-7f793a4eb734' || values.country,
+            region: '057fd9be-c11c-46c5-9ca7-7f793a4eb734' || values.region,
             dob: moment(values.date_of_birth).format('YYYY-MM-DD'),
-            district: values.district,
+            city: '057fd9be-c11c-46c5-9ca7-7f793a4eb734' || values.district,
             gender: values.gender,
+            password: values.password_login,
             // email: values.email,
             // secret: secretKey,
           },
           {
             headers: {
               'client-id': process.env.UUID,
+              Authorization: userToken,
             },
           }
         )
         .then(({ data, status }) => {
           console.log(data)
-          if (status === 200) {
-            createCookies(() => {
-              setCookie({}, 'userId', data.token.user_id, { path: '/' })
-              destroyCookie({}, 'phoneNum', { path: '/' })
-              destroyCookie({}, 'secretKey', { path: '/' })
-            }).then(() => Router.push(more ? '/bonus' : '/'))
+          if (status === 204) {
+            Router.push(more ? '/bonus' : '/')
           }
         })
         .catch((err) => setOtpError(true))
@@ -96,9 +95,6 @@ function SignupForm() {
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
   }
-  const arr = [1, 2, 3, 4, 5, 6]
-  const newArr = arr.filter((el, index) => index % 2 === 1)
-  console.log(`${arr}\n${newArr}`)
   useEffect(() => {
     if (!device) {
       const deviceDetector = new DeviceDetector()
@@ -183,6 +179,19 @@ function SignupForm() {
           onChange={handleChange}
           name='district'
         />
+        {router.query.email ? (
+          <>
+            <Input
+              placeholder='Введите пароль'
+              label='Пароль'
+              value={values.password_login}
+              onChange={handleChange}
+              name='password_login'
+            />
+          </>
+        ) : (
+          ''
+        )}
         {/* <Input
           placeholder='Введите электронная почта'
           label='Электронная почта'

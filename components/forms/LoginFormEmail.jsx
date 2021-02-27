@@ -9,11 +9,12 @@ import axios from 'axios'
 import InputEmail from './InputEmail'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import ReCAPTCHA from 'react-google-recaptcha'
-function LoginForm() {
+function LoginFormEmail() {
   const [values, setValues] = useState({
-    phone_login: '',
+    email_login: '',
     otp_login: '',
     recaptcha: '',
+    password_login: '',
   })
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -37,9 +38,9 @@ function LoginForm() {
     setPhoneNumError(false)
     axios
       .post(
-        process.env.GENERATE_OTP_API_URL,
+        process.env.GENERATE_OTP_EMAIL_API_URL,
         {
-          phone: values.phone_login.replaceAll(' ', ''),
+          email: values.email_login.replaceAll(' ', ''),
         },
         {
           headers: {
@@ -48,7 +49,6 @@ function LoginForm() {
         }
       )
       .then(({ data, status }) => {
-        console.log(data)
         setIsLoading(false)
         if (status === 200) {
           if (data?.user_found) {
@@ -57,11 +57,9 @@ function LoginForm() {
           createCookies(() => {
             setCookie({}, 'secretKey', data.secret, { path: '/' })
             setCookie({}, 'phoneNum', values.phone_login, { path: '/' })
-            // then((res) => res && Router.push('/signup')
           }, !data?.user_found).then((res) => {
             if (res) {
               setRegistering(true)
-              setUserExists(true)
             }
           })
         }
@@ -75,15 +73,23 @@ function LoginForm() {
   const checkOTP = () => {
     setError(false)
     setIsLoading(true)
-    axios
-      .post(
-        registering ? process.env.REGISTER_API_URL : process.env.LOGIN_API_URL,
-        {
+    const data = registering
+      ? {
           code: values.otp_login.replaceAll(' ', ''),
           device,
-          phone: values.phone_login.replaceAll(' ', ''),
+          email: values.email_login,
           secret: secretKey,
-        },
+        }
+      : {
+          login: values.email_login,
+          password: values.password_login,
+        }
+    axios
+      .post(
+        registering
+          ? process.env.REGISTER_EMAIL_API_URL
+          : process.env.LOGIN_EMAIL_API_URL,
+        data,
         {
           headers: {
             'client-id': process.env.UUID,
@@ -92,14 +98,14 @@ function LoginForm() {
       )
       .then(({ data, status }) => {
         setIsLoading(false)
+        console.log(data)
         if (status === 200) {
           setCookie({}, 'userId', data.token.user_id, { path: '/' })
           setCookie({}, 'userToken', data.token.access_token, { path: '/' })
           destroyCookie({}, 'secretKey', data.secret, { path: '/' })
-          destroyCookie({}, 'phoneNum', values.phone_login, { path: '/' })
         }
       })
-      .then(() => Router.push(registering ? '/signup' : '/'))
+      .then(() => Router.push(registering ? '/signup?email=true' : '/'))
       .catch((err) => {
         console.log(err)
         setIsLoading(false)
@@ -109,7 +115,7 @@ function LoginForm() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setRecaptchaError(false)
-    if (userExists) {
+    if (userExists || registering) {
       if (values.recaptcha === '' || !values.recaptcha.trim()) {
         setRecaptchaError(true)
       } else {
@@ -140,40 +146,17 @@ function LoginForm() {
     <div className={cls.form_container}>
       <p className='heading1'>Войти</p>
       <form className={cls.form} onSubmit={handleSubmit} autoComplete='off'>
-        {/* <InputEmail
+        <Input
           placeholder='Введите адрес эл. почты'
           label='Эл. почта'
           value={values.email}
           onChange={handleChange}
           name='email_login'
           type='email'
+          error={phoneNumError}
           disabled={userExists}
-        /> */}
-        {router.query.email ? (
-          <Input
-            placeholder='Введите адрес эл. почты'
-            label='Эл. почта'
-            value={values.email}
-            onChange={handleChange}
-            name='email_login'
-            type='email'
-            error={phoneNumError}
-            disabled={userExists}
-          />
-        ) : (
-          <Input
-            placeholder='Введите номер телефона'
-            label='Номер телефона'
-            value={values.phone_login}
-            onChange={handleChange}
-            name='phone_login'
-            type='tel'
-            error={phoneNumError}
-            phone
-            disabled={userExists}
-          />
-        )}
-        {userExists ? (
+        />
+        {registering ? (
           <>
             <Input
               placeholder='Введите одноразовый пароль'
@@ -183,6 +166,34 @@ function LoginForm() {
               name='otp_login'
               type='tel'
               otp
+              error={error}
+            />
+            <div className={cls.recaptcha_survey}>
+              <ReCAPTCHA
+                sitekey='6Lfly2UaAAAAAOovZnMTe7Ginwy5KBrZcyBc9GZW
+    '
+                hl='ru'
+                ref={recaptcha}
+                onChange={(val) => setValues({ ...values, recaptcha: val })}
+              />
+              {recaptchaError ? (
+                <p className={cls.error}>Требуется проверка человеком</p>
+              ) : (
+                ''
+              )}
+            </div>
+          </>
+        ) : (
+          ''
+        )}
+        {userExists ? (
+          <>
+            <Input
+              placeholder='Введите пароль'
+              label='Пароль'
+              value={values.password_login}
+              onChange={handleChange}
+              name='password_login'
               error={error}
             />
             <div className={cls.recaptcha_survey}>
@@ -223,4 +234,4 @@ function LoginForm() {
   )
 }
 
-export default LoginForm
+export default LoginFormEmail
