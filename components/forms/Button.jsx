@@ -12,7 +12,7 @@ function Button({ text, variant, onClick, type, isLoading, success, small }) {
           <div className={cls.spinner_icon}></div>
         </div>
       ) : (
-        text
+        success || text
       )}
     </button>
   )

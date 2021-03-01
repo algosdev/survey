@@ -9,11 +9,12 @@ import axios from 'axios'
 import InputEmail from './InputEmail'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import ReCAPTCHA from 'react-google-recaptcha'
-function LoginFormEmail() {
+function ForgotForm() {
   const [values, setValues] = useState({
     email_login: '',
     otp_login: '',
     recaptcha: '',
+    password_login_confirm: '',
     password_login: '',
   })
   const router = useRouter()
@@ -22,11 +23,12 @@ function LoginFormEmail() {
   const [registering, setRegistering] = useState(false)
   const [recaptchaError, setRecaptchaError] = useState(false)
   const [error, setError] = useState(false)
-  const [phoneNumError, setPhoneNumError] = useState(false)
+  const [passwordError, setPasswordError] = useState(false)
   const [success, setSuccess] = useState(false)
+  const [accessToUpdate, setAccessToUpdate] = useState(false)
   const [device, setDevice] = useState(null)
   const recaptcha = useRef()
-  const { secretKey } = parseCookies()
+  const { secretKey, userToken } = parseCookies()
   const createCookies = (func, value) =>
     new Promise((resolve, reject) => {
       func()
@@ -35,7 +37,7 @@ function LoginFormEmail() {
     })
   const sendOTP = () => {
     setIsLoading(true)
-    setPhoneNumError(false)
+    setPasswordError(false)
     axios
       .post(
         process.env.GENERATE_OTP_EMAIL_API_URL,
@@ -57,45 +59,59 @@ function LoginFormEmail() {
           createCookies(() => {
             setCookie({}, 'secretKey', data.secret, { path: '/' })
             setCookie({}, 'phoneNum', values.phone_login, { path: '/' })
-          }, !data?.user_found).then((res) => {
-            if (res) {
-              setRegistering(true)
-            }
-          })
+          }, !data?.user_found)
         }
       })
       .catch((err) => {
         setIsLoading(false)
-        setPhoneNumError(true)
+        setPasswordError(true)
       })
   }
-
-  const checkOTP = () => {
-    setError(false)
+  const updatePassword = () => {
+    setPasswordError(false)
     setIsLoading(true)
-    const data = registering
-      ? {
-          code: values.otp_login.replaceAll(' ', ''),
-          device,
-          email: values.email_login,
-          secret: secretKey,
-        }
-      : {
-          login: values.email_login,
-          password: values.password_login,
-        }
     axios
-      .post(
-        registering
-          ? process.env.REGISTER_EMAIL_API_URL
-          : process.env.LOGIN_EMAIL_API_URL,
-        data,
+      .put(
+        'https://survey.api.udevs.io/v1/update-customer-password',
+        {
+          password: values.password_login,
+        },
         {
           headers: {
+            Authorization: userToken,
             'client-id': process.env.UUID,
           },
         }
       )
+      .then((res) => {
+        setIsLoading(false)
+        if (res.status === 204) {
+          setSuccess(true)
+          setTimeout(() => router.push('/'), 1000)
+        }
+        console.log(res)
+      })
+      .catch((err) => {
+        setIsLoading(false)
+        console.log(err)
+      })
+  }
+  const checkOTP = () => {
+    setError(false)
+    setIsLoading(true)
+    const data = {
+      code: values.otp_login.replaceAll(' ', ''),
+      device,
+      email: values.email_login,
+      secret: secretKey,
+    }
+
+    axios
+      .post(process.env.CHECK_OTP_EMAIL_API_URL, data, {
+        headers: {
+          'client-id': process.env.UUID,
+        },
+      })
       .then(({ data, status }) => {
         setIsLoading(false)
         console.log(data)
@@ -105,7 +121,7 @@ function LoginFormEmail() {
           destroyCookie({}, 'secretKey', data.secret, { path: '/' })
         }
       })
-      .then(() => Router.push(registering ? '/signup?email=true' : '/'))
+      .then(() => setAccessToUpdate(true))
       .catch((err) => {
         console.log(err)
         setIsLoading(false)
@@ -115,12 +131,17 @@ function LoginFormEmail() {
   const handleSubmit = (e) => {
     e.preventDefault()
     setRecaptchaError(false)
-    if (userExists || registering) {
-      if (values.recaptcha === '' || !values.recaptcha.trim()) {
+    setPasswordError(false)
+    if (accessToUpdate) {
+      if (values.password_login_confirm !== values.password_login) {
+        setPasswordError(true)
+      } else if (values.recaptcha === '' || !values.recaptcha?.trim()) {
         setRecaptchaError(true)
       } else {
-        checkOTP()
+        updatePassword()
       }
+    } else if (userExists) {
+      checkOTP()
     } else {
       sendOTP()
     }
@@ -144,7 +165,7 @@ function LoginFormEmail() {
   }, [device])
   return (
     <div className={cls.form_container}>
-      <p className='heading1'>Войти</p>
+      <p className='heading1'>Забыл пароль?</p>
       <form className={cls.form} onSubmit={handleSubmit} autoComplete='off'>
         <Input
           placeholder='Введите адрес эл. почты'
@@ -153,10 +174,9 @@ function LoginFormEmail() {
           onChange={handleChange}
           name='email_login'
           type='email'
-          error={phoneNumError}
           disabled={userExists}
         />
-        {registering ? (
+        {userExists ? (
           <>
             <Input
               placeholder='Введите одноразовый пароль'
@@ -166,27 +186,14 @@ function LoginFormEmail() {
               name='otp_login'
               type='tel'
               otp
+              disabled={accessToUpdate}
               error={error}
             />
-            <div className={cls.recaptcha_survey}>
-              <ReCAPTCHA
-                sitekey='6Lfly2UaAAAAAOovZnMTe7Ginwy5KBrZcyBc9GZW
-    '
-                hl='ru'
-                ref={recaptcha}
-                onChange={(val) => setValues({ ...values, recaptcha: val })}
-              />
-              {recaptchaError ? (
-                <p className={cls.error}>Требуется проверка человеком</p>
-              ) : (
-                ''
-              )}
-            </div>
           </>
         ) : (
           ''
         )}
-        {userExists ? (
+        {accessToUpdate ? (
           <>
             <Input
               placeholder='Введите пароль'
@@ -194,8 +201,23 @@ function LoginFormEmail() {
               value={values.password_login}
               onChange={handleChange}
               name='password_login'
-              error={error}
+              error={passwordError}
             />
+            <Input
+              placeholder='Повторите пароль'
+              label='Повторите пароль'
+              value={values.password_login_confirm}
+              onChange={handleChange}
+              name='password_login_confirm'
+              error={passwordError}
+            />
+            <div className={cls.recaptcha_survey}>
+              {passwordError ? (
+                <p className={cls.error}>Пароли не соответствуют</p>
+              ) : (
+                ''
+              )}
+            </div>
             <div className={cls.recaptcha_survey}>
               <ReCAPTCHA
                 sitekey='6Lfly2UaAAAAAOovZnMTe7Ginwy5KBrZcyBc9GZW
@@ -214,29 +236,22 @@ function LoginFormEmail() {
         ) : (
           ''
         )}
-
         <div className={cls.actions}>
-          <Button text='Продолжить' isLoading={isLoading} success={success} />
+          <Button
+            text='Продолжить'
+            isLoading={isLoading}
+            success={success ? 'Успешно изменен' : ''}
+          />
         </div>
+
         <div className={cls.extra_link}>
-          <Link href='/forgot'>
-            <a>Забыл пароль?</a>
+          <Link href='/login'>
+            <a>Уже есть аккаунт?</a>
           </Link>
-        </div>
-        <div className={cls.extra_link}>
-          {!router.query.email ? (
-            <Link href='/login?email=true'>
-              <a>Войти с помощью электронной почты</a>
-            </Link>
-          ) : (
-            <Link href='/login'>
-              <a>Войти с помощью номер телефона</a>
-            </Link>
-          )}
         </div>
       </form>
     </div>
   )
 }
 
-export default LoginFormEmail
+export default ForgotForm
