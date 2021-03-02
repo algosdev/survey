@@ -56,6 +56,9 @@
     color: red;
     font-size: 14px;
     margin: 4px 0;
+    &.already_exists {
+      margin-top: -8px;
+    }
   }
 }
 

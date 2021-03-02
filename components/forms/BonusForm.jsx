@@ -4,6 +4,19 @@ import cls from './form.module.scss'
 import Input from './Input'
 import Select from './Select'
 import { Router } from '../../i18n'
+const statusOptions =  [
+    { display: 'Не женат / не замужем', value: 'single' },
+    { display: 'Женат (а) / проживаю в гражданском браке', value: 'married' },
+    { display: 'Раведен (а)', value: 'devorced' },
+    { display: 'Вдова (ец)', value: 'wnameow' },
+  ]
+  const numberOfChildrenOptions = [
+    { display: 'Нет', value: 'no' },
+    { display: '1', value: '1' },
+    { display: '2', value: '2' },
+    { display: '3', value: '3' },
+    { display: ' 5 и более', value: 'more' },
+  ]
 function BonusForm() {
   const [values, setValues] = useState({
     sex: 'none',
@@ -83,25 +96,14 @@ function BonusForm() {
 
         <Select
           placeholder='Выберите семейное положение'
-          options={[
-            { display: 'Холост / не замужем', value: 'single' },
-            { display: 'Женат / замужем', value: 'married' },
-            { display: 'Разведен / разведена', value: 'devorced' },
-            { display: 'Вдовец / вдова', value: 'wnameow' },
-          ]}
+          options={statusOptions}
           value={values.status}
           onChange={(e) => setValues({ ...values, status: e.target.value })}
           name='status'
         />
         <Select
-          placeholder='Количество детей'
-          options={[
-            { display: 'Нет', value: 'no' },
-            { display: '1', value: '1' },
-            { display: '2', value: '2' },
-            { display: '3', value: '3' },
-            { display: ' 5 и более', value: 'more' },
-          ]}
+          placeholder='Сколько у Вас детей до 18 лет?'
+          options={numberOfChildrenOptions}
           value={values.number_of_children}
           onChange={(e) =>
             setValues({ ...values, number_of_children: e.target.value })

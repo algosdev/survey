@@ -9,7 +9,7 @@ import axios from 'axios'
 import InputEmail from './InputEmail'
 import { parseCookies, setCookie, destroyCookie } from 'nookies'
 import ReCAPTCHA from 'react-google-recaptcha'
-function LoginFormEmail() {
+function SignupFormEmail() {
   const [values, setValues] = useState({
     email_login: '',
     otp_login: '',
@@ -33,54 +33,57 @@ function LoginFormEmail() {
       resolve(value)
       reject()
     })
-  // const sendOTP = () => {
-  //   setIsLoading(true)
-  //   setPhoneNumError(false)
-  //   axios
-  //     .post(
-  //       process.env.GENERATE_OTP_EMAIL_API_URL,
-  //       {
-  //         email: values.email_login.replaceAll(' ', ''),
-  //       },
-  //       {
-  //         headers: {
-  //           'client-id': process.env.UUID,
-  //         },
-  //       }
-  //     )
-  //     .then(({ data, status }) => {
-  //       setIsLoading(false)
-  //       if (status === 200) {
-  //         if (data?.user_found) {
-  //           setUserExists(true)
-  //         }
-  //         createCookies(() => {
-  //           setCookie({}, 'secretKey', data.secret, { path: '/' })
-  //           setCookie({}, 'phoneNum', values.phone_login, { path: '/' })
-  //         }, !data?.user_found).then((res) => {
-  //           if (res) {
-  //             setRegistering(true)
-  //           }
-  //         })
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       setIsLoading(false)
-  //       setPhoneNumError(true)
-  //     })
-  // }
-
-  const checkPassword = () => {
-    setError(false)
+  const sendOTP = () => {
     setIsLoading(true)
-    setRegistering(false)
-    const data =  {
-          login: values.email_login,
-          password: values.password_login,
-        }
+    setPhoneNumError(false)
     axios
       .post(
-          process.env.LOGIN_EMAIL_API_URL,
+        process.env.GENERATE_OTP_EMAIL_API_URL,
+        {
+          email: values.email_login.replaceAll(' ', ''),
+        },
+        {
+          headers: {
+            'client-id': process.env.UUID,
+          },
+        }
+      )
+      .then(({ data, status }) => {
+        setIsLoading(false)
+        if (status === 200) {
+          if (data?.user_found) {
+            setUserExists(true)
+          }
+          createCookies(() => {
+            setCookie({}, 'secretKey', data.secret, { path: '/' })
+            setCookie({}, 'phoneNum', values.phone_login, { path: '/' })
+          }, !data?.user_found).then((res) => {
+            if (res) {
+              setRegistering(true)
+            }
+          })
+        }
+      })
+      .catch((err) => {
+        setIsLoading(false)
+        setPhoneNumError(true)
+      })
+  }
+
+  const checkOTP = () => {
+    setError(false)
+    setIsLoading(true)
+    const data =
+      {
+          code: values.otp_login.replaceAll(' ', ''),
+          device,
+          email: values.email_login,
+          secret: secretKey,
+        }
+      
+    axios
+      .post(
+         process.env.REGISTER_EMAIL_API_URL,
         data,
         {
           headers: {
@@ -96,26 +99,26 @@ function LoginFormEmail() {
           setCookie({}, 'userToken', data.token.access_token, { path: '/' })
           destroyCookie({}, 'secretKey', data.secret, { path: '/' })
         }
-      }).then(() => Router.push('/'))
+      })
+      .then(() => Router.push(registering ? '/signup' : '/'))
       .catch((err) => {
-        if(err.response.data.message.includes("incorrect credentials")){
-          setError(true)
-        }
-        else {
-          setRegistering(true)
-        }
-        console.log(err.response.data.message)
+        console.log(err)
         setIsLoading(false)
+        setError(true)
       })
   }
   const handleSubmit = (e) => {
     e.preventDefault()
     setRecaptchaError(false)
-      if (values.recaptcha === '' || !values.recaptcha?.trim()) {
+    if (registering) {
+      if (values.recaptcha === '' || !values.recaptcha.trim()) {
         setRecaptchaError(true)
       } else {
-        checkPassword()
+        checkOTP()
       }
+    } else {
+      sendOTP()
+    }
   }
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
@@ -136,7 +139,7 @@ function LoginFormEmail() {
   }, [device])
   return (
     <div className={cls.form_container}>
-      <p className='heading1'>Войти</p>
+      <p className='heading1'>Регистрация</p>
       <form className={cls.form} onSubmit={handleSubmit} autoComplete='off'>
         <Input
           placeholder='Введите адрес эл. почты'
@@ -145,14 +148,23 @@ function LoginFormEmail() {
           onChange={handleChange}
           name='email_login'
           type='email'
-          error={registering}
+          error={phoneNumError}
+          disabled={registering}
         />
+        {userExists ?
+        <div className={cls.recaptcha_survey}>
+           <p className={`${cls.error} ${cls.already_exists}`}>Пользователь уже существует, пожалуйста, войдите!</p>
+        </div> : ""}
+        {registering ? (
+          <>
             <Input
-              placeholder='Введите пароль'
-              label='Пароль'
-              value={values.password_login}
+              placeholder='Введите одноразовый пароль'
+              label='Одноразовый пароль'
+              value={values.otp_login}
               onChange={handleChange}
-              name='password_login'
+              name='otp_login'
+              type='tel'
+              otp
               error={error}
             />
             <div className={cls.recaptcha_survey}>
@@ -164,38 +176,33 @@ function LoginFormEmail() {
                 onChange={(val) => setValues({ ...values, recaptcha: val })}
               />
               {recaptchaError ? (
-                <p className={cls.error}>Требуется проверка человеком!</p>
+                <p className={cls.error}>Требуется проверка человеком</p>
               ) : (
-                registering ? <p className={cls.error}>Пользователь не найден, зарегистрируйтесь!</p> : ""
+                ''
               )}
             </div>
+          </>
+        ) : (
+          ''
+        )}
+
         <div className={cls.actions}>
           <Button text='Продолжить' isLoading={isLoading} success={success} />
         </div>
         <div className={cls.extra_link}>
-          <Link href='/forgot'>
-            <a>Забыл пароль?</a>
-          </Link>
-        </div>
-        <div className={cls.extra_link}>
-          {!router.query.email ? (
-            <Link href='/login?email=true'>
+        <Link href='/login?email=true'>
               <a>Войти с помощью электронной почты</a>
             </Link>
-          ) : (
-            <Link href='/login'>
-              <a>Войти с помощью номер телефона</a>
-            </Link>
-          )}
         </div>
         <div className={cls.extra_link}>
-        <Link href='/signup?email=true'>
-              <a>Регистрация по электронной почте</a>
+        <Link href='/login'>
+              <a>Войти с помощью номер телефона</a>
             </Link>
-          </div>
+        </div>
+        
       </form>
     </div>
   )
 }
 
-export default LoginFormEmail
+export default SignupFormEmail
